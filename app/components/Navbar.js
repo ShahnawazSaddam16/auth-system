@@ -11,17 +11,10 @@ const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-
-    if (!token) {
-      setLoading(false);
-      return;
-    }
-
+    // Fetch user data from backend using cookies
     fetch("http://localhost:5000/api/auth/me", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      method: "GET",
+      credentials: "include", // <-- important to send cookies
     })
       .then((res) => {
         if (!res.ok) throw new Error("Unauthorized");
@@ -31,7 +24,7 @@ const Navbar = () => {
         setUser(data.user);
       })
       .catch(() => {
-        localStorage.clear();
+        setUser(null);
       })
       .finally(() => setLoading(false));
   }, [router]);
@@ -45,6 +38,15 @@ const Navbar = () => {
         .join("")
         .toUpperCase()
     : "";
+
+  const handleLogout = async () => {
+    await fetch("http://localhost:5000/api/auth/logout", {
+      method: "POST",
+      credentials: "include", // <-- send cookies
+    });
+    setUser(null);
+    setMenuOpen(false);
+  };
 
   return (
     <>
@@ -71,25 +73,12 @@ const Navbar = () => {
 
           {user ? (
             <>
-              {/* Initials only */}
               <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center font-bold cursor-pointer">
                 {initials}
               </div>
 
               <button
-                onClick={async () => {
-                  const token = localStorage.getItem("token");
-
-                  await fetch("http://localhost:5000/api/auth/logout", {
-                    method: "POST",
-                    headers: {
-                      Authorization: `Bearer ${token}`,
-                    },
-                  });
-
-                  localStorage.clear();
-                  setUser(null);
-                }}
+                onClick={handleLogout}
                 className="text-sm text-red-400 hover:underline"
               >
                 Logout
@@ -123,35 +112,24 @@ const Navbar = () => {
 
           {user ? (
             <>
-              {/* Initials only */}
               <div className="block m-auto">
-              <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center font-bold">
-                {initials}
-              </div>
+                <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center font-bold">
+                  {initials}
+                </div>
               </div>
 
               <button
-                onClick={async () => {
-                  const token = localStorage.getItem("token");
-
-                  await fetch("http://localhost:5000/api/auth/logout", {
-                    method: "POST",
-                    headers: {
-                      Authorization: `Bearer ${token}`,
-                    },
-                  });
-
-                  localStorage.clear();
-                  setUser(null);
-                  setMenuOpen(false);
-                }}
+                onClick={handleLogout}
                 className="text-red-400"
               >
                 Logout
               </button>
             </>
           ) : (
-            <button onClick={() => router.push("/Auth")} className="text-blue-400">
+            <button
+              onClick={() => router.push("/Auth")}
+              className="text-blue-400"
+            >
               Login
             </button>
           )}

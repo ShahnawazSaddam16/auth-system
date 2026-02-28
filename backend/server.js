@@ -3,13 +3,23 @@ const rateLimit = require("express-rate-limit");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
+const cookieParser = require("cookie-parser");
 const Auth = require("./controllers/auth");
-const Port = process.env.PORT || 5000;
-const app = express();
 
 dotenv.config();
-app.use(cors());
+
+const app = express();
+const Port = process.env.PORT || 5000;
+
+// Middleware
 app.use(express.json());
+app.use(cookieParser()); 
+
+
+app.use(cors({
+  origin: "http://localhost:3000", 
+  credentials: true
+}));
 
 // Rate Limit
 const limiter = rateLimit({
@@ -17,7 +27,7 @@ const limiter = rateLimit({
   max: 100,
   message: {
     success: false,
-    message: "To many requests, please try again",
+    message: "Too many requests, please try again later",
   },
   standardHeaders: true,
   legacyHeaders: false,
@@ -25,7 +35,7 @@ const limiter = rateLimit({
 
 app.use(limiter);
 
-//Routes
+// Routes
 app.use("/api/auth", Auth);
 
 // Mongoose connect
@@ -39,11 +49,11 @@ mongoose
     process.exit(1);
   });
 
-// Server connect
-app.listen(Port,(err)=>{
-    if(err){
-        console.err("❌❌ Error Connecting Server");
-    }else{
-        console.log(`❌❌ Server Running at http://localhost:${Port}`);
-    }
+
+app.listen(Port, (err) => {
+  if (err) {
+    console.error("❌❌ Error Connecting Server", err);
+  } else {
+    console.log(`✅✅ Server Running at http://localhost:${Port}`);
+  }
 });
