@@ -5,16 +5,17 @@ import { useRouter } from "next/navigation";
 import React from "react";
 
 const Navbar = () => {
+  const API_ORIGIN = process.env.NEXT_PUBLIC_API_ORIGIN;
+
   const router = useRouter();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
-    // Fetch user data from backend using cookies
-    fetch("http://localhost:5000/api/auth/me", {
+    fetch(`${API_ORIGIN}/auth/me`, {
       method: "GET",
-      credentials: "include", // <-- important to send cookies
+      credentials: "include", 
     })
       .then((res) => {
         if (!res.ok) throw new Error("Unauthorized");
@@ -39,14 +40,17 @@ const Navbar = () => {
         .toUpperCase()
     : "";
 
-  const handleLogout = async () => {
-    await fetch("http://localhost:5000/api/auth/logout", {
-      method: "POST",
-      credentials: "include", // <-- send cookies
-    });
-    setUser(null);
-    setMenuOpen(false);
-  };
+const handleLogout = async () => {
+  await fetch(`${API_ORIGIN}/auth/logout`, {
+    method: "POST",
+    credentials: "include",
+  });
+
+  setUser(null);
+  setMenuOpen(false);
+
+  window.location.href = "/";
+};
 
   return (
     <>

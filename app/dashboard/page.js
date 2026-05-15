@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Auth from "./Auth/Auth";
+import Navbar from "../components/Navbar";
 
-export default function Home() {
+export const Dashboard = () => {
   const router = useRouter();
 
   const API_ORIGIN = process.env.NEXT_PUBLIC_API_ORIGIN;
@@ -24,9 +24,7 @@ export default function Home() {
 
         const data = await res.json();
 
-        if (res.ok && data.success) {
-          router.push("/dashboard");
-        } else {
+        if (!res.ok || !data.success) {
           router.push("/");
         }
 
@@ -42,12 +40,14 @@ export default function Home() {
   }, [router, API_ORIGIN]);
 
   if (loading) {
-null
+    null
   }
 
-  return(
+  return (
     <>
-    <Auth />;
+      <Navbar />
     </>
-  )
-}
+  );
+};
+
+export default Dashboard;
