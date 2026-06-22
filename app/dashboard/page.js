@@ -2,8 +2,8 @@
 
 import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import Navbar from "../components/Navbar";
-import { useAuth } from "../Auth/AuthContext";
+import Navbar from "../../components/Navbar";
+import { useAuth } from "../../components/context/AuthContext";
 
 export const Dashboard = () => {
   const router = useRouter();

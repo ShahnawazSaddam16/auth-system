@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "./AuthContext";
+import { useAuth } from "../../components/context/AuthContext";
 
 const Auth = () => {
   const API_ORIGIN = process.env.NEXT_PUBLIC_API_ORIGIN;

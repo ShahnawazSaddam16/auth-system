@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import React from "react";
-import { useAuth } from "../Auth/AuthContext";
+import { useAuth } from "./context/AuthContext";
 
 const Navbar = () => {
   const router = useRouter();

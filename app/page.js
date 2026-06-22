@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Auth from "./Auth/Auth";
-import { useAuth } from "./Auth/AuthContext";
+import { useAuth } from "../components/context/AuthContext";
 
 export default function Home() {
   const router = useRouter();
