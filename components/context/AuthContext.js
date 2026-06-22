@@ -45,7 +45,6 @@ export function AuthProvider({ children }) {
           credentials: "include",
         });
       } catch (err) {
-        // ignore
       }
 
       setUser(null);

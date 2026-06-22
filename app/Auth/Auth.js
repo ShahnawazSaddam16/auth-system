@@ -64,12 +64,10 @@ const Auth = () => {
       } else {
         setMessage(data.message);
 
-        // persist token/user and update AuthContext
         try {
           localStorage.setItem("token", data.token);
           localStorage.setItem("user", JSON.stringify(data.user));
         } catch (e) {
-          // ignore storage errors
         }
 
         if (setUserData) setUserData(data.user);
