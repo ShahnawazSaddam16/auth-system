@@ -2,11 +2,13 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useAuth } from "./AuthContext";
 
 const Auth = () => {
   const API_ORIGIN = process.env.NEXT_PUBLIC_API_ORIGIN;
 
   const router = useRouter();
+  const { setUserData } = useAuth();
 
   const [isSignup, setIsSignup] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -62,12 +64,15 @@ const Auth = () => {
       } else {
         setMessage(data.message);
 
-        localStorage.setItem("token", data.token);
+        // persist token/user and update AuthContext
+        try {
+          localStorage.setItem("token", data.token);
+          localStorage.setItem("user", JSON.stringify(data.user));
+        } catch (e) {
+          // ignore storage errors
+        }
 
-        localStorage.setItem(
-          "user",
-          JSON.stringify(data.user)
-        );
+        if (setUserData) setUserData(data.user);
 
         setTimeout(() => {
           router.push("/dashboard");

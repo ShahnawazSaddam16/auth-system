@@ -1,34 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import React from "react";
+import { useAuth } from "../Auth/AuthContext";
 
 const Navbar = () => {
-  const API_ORIGIN = process.env.NEXT_PUBLIC_API_ORIGIN;
-
   const router = useRouter();
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const { user, loading, logout } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
-
-  useEffect(() => {
-    fetch(`${API_ORIGIN}/auth/me`, {
-      method: "GET",
-      credentials: "include", 
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("Unauthorized");
-        return res.json();
-      })
-      .then((data) => {
-        setUser(data.user);
-      })
-      .catch(() => {
-        setUser(null);
-      })
-      .finally(() => setLoading(false));
-  }, [router]);
 
   if (loading) return null;
 
@@ -40,17 +20,10 @@ const Navbar = () => {
         .toUpperCase()
     : "";
 
-const handleLogout = async () => {
-  await fetch(`${API_ORIGIN}/auth/logout`, {
-    method: "POST",
-    credentials: "include",
-  });
-
-  setUser(null);
-  setMenuOpen(false);
-
-  window.location.href = "/";
-};
+  const handleLogout = async () => {
+    await logout();
+    setMenuOpen(false);
+  };
 
   return (
     <>
